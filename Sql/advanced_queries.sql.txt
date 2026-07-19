@@ -1,0 +1,180 @@
+-- Furniture Category Sales
+SELECT
+    ROUND(SUM(Sales),2) AS Furniture_Sales
+FROM superstore
+WHERE Category = 'Furniture';
+
+-- Total Profit of Technology Category
+SELECT
+    ROUND(SUM(Profit),2) AS Technology_Profit
+FROM superstore
+WHERE Category = 'Technology';
+
+-- Total Sales of Furniture Category
+SELECT
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+WHERE Category = 'Furniture';
+
+-- Technology Sales in West Region
+SELECT
+    ROUND(SUM(Sales),2) AS Technology_Sales_West
+FROM superstore
+WHERE Category = 'Technology'
+AND Region = 'West';
+
+-- Office Supplies Sales in East Region
+SELECT
+    ROUND(SUM(Sales),2) AS Office_Supplies_Sales_East
+FROM superstore
+WHERE Category = 'Office Supplies'
+AND Region = 'East';
+
+-- Total Sales of Technology and Furniture Categories
+SELECT
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+WHERE Category = 'Technology'
+OR Category = 'Furniture';
+
+-- Sales of All Three Categories
+SELECT
+    Category,
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+WHERE Category IN ('Technology','Furniture','Office Supplies')
+GROUP BY Category
+ORDER BY Total_Sales DESC;
+
+-- Total Profit of West and East Regions
+SELECT
+    Region,
+    ROUND(SUM(Profit),2) AS Total_Profit
+FROM superstore
+WHERE Region IN ('West','East')
+GROUP BY Region
+ORDER BY Total_Profit DESC;
+
+-- Check Date Formate	
+SELECT "Order Date"
+FROM superstore
+
+-- Sales in 2016
+SELECT
+    ROUND(SUM(Sales),2) AS Sales_2016
+FROM superstore
+WHERE SUBSTR("Order Date",-4)='2016';
+LIMIT 10;
+
+-- Customers whose name starts with A
+SELECT
+    "Customer Name"
+FROM superstore
+WHERE "Customer Name" LIKE 'A%';
+
+-- Customers whose name ends with n
+SELECT
+    "Customer Name"
+FROM superstore
+WHERE "Customer Name" LIKE '%n';
+
+-- Products containing Chair
+SELECT
+    "Product Name"
+FROM superstore
+WHERE "Product Name" LIKE '%Chair%';
+
+-- Cities starting with 'New'
+SELECT
+    City
+FROM superstore
+WHERE City LIKE 'New%';
+
+-- Products with Sales between 1000 and 5000
+SELECT
+    "Product Name",
+    Sales
+FROM superstore
+WHERE Sales BETWEEN 1000 AND 5000
+ORDER BY Sales DESC;
+
+-- Products with Discount between 20% and 50%
+SELECT
+    "Product Name",
+    Discount
+FROM superstore
+WHERE Discount BETWEEN 0.2 AND 0.5
+ORDER BY Discount DESC;
+
+-- Customers with Profit Greater Than 5000
+SELECT
+    "Customer Name",
+    ROUND(SUM(Profit),2) AS Total_Profit
+FROM superstore
+GROUP BY "Customer Name"
+HAVING SUM(Profit) > 5000
+ORDER BY Total_Profit DESC;
+
+-- Classify Products Based on Discount
+SELECT
+    "Product Name",
+    Discount,
+    CASE
+        WHEN Discount = 0 THEN 'No Discount'
+        WHEN Discount < 0.3 THEN 'Low Discount'
+        WHEN Discount >= 0.3 THEN 'High Discount'
+    END AS Discount_Status
+FROM superstore;
+
+-- Products with Sales Greater Than Average Sales
+SELECT
+    "Product Name",
+    Sales
+FROM superstore
+WHERE Sales >
+(
+    SELECT AVG(Sales)
+    FROM superstore
+)
+ORDER BY Sales DESC;
+
+-- Products with Profit Less Than Average Profit
+SELECT
+    "Product Name",
+    Profit
+FROM superstore
+WHERE Profit <
+(
+    SELECT AVG(Profit)
+    FROM superstore
+)
+ORDER BY Profit ASC;
+
+--Average Profit of Technology Category
+
+SELECT
+    Category,
+    ROUND(AVG(Profit),2) AS Avg_Profit
+FROM superstore
+WHERE Category = 'Technology'
+GROUP BY Category;
+
+-- Top 5 Products by Sales
+
+SELECT
+    "Product Name",
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+GROUP BY "Product Name"
+ORDER BY Total_Sales DESC
+LIMIT 5;
+
+-- West Region Customers with Sales Greater Than 5000
+SELECT
+    "Customer Name",
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+WHERE Region = 'West'
+GROUP BY "Customer Name"
+HAVING SUM(Sales) > 5000
+ORDER BY Total_Sales DESC;

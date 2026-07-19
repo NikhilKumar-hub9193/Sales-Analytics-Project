@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="sales_analysis.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2466"/><column_width id="4" width="0"/><expanded_item id="0" parent="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="superstore" custom_title="0" dock_id="1" table="4,10:mainsuperstore"/><dock_state state="000000ff00000000fd00000001000000020000043c000002b4fc0100000001fb000000160064006f0063006b00420072006f007700730065003101000000000000043c0000015c00ffffff0000043c0000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="superstore" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="50"/><column index="2" value="117"/><column index="3" value="85"/><column index="4" value="85"/><column index="5" value="117"/><column index="6" value="78"/><column index="7" value="163"/><column index="8" value="93"/><column index="9" value="109"/><column index="10" value="132"/><column index="11" value="117"/><column index="12" value="73"/><column index="13" value="62"/><column index="14" value="124"/><column index="15" value="124"/><column index="16" value="93"/><column index="17" value="300"/><column index="18" value="78"/><column index="19" value="56"/><column index="20" value="57"/><column index="21" value="85"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">-- Top 10 Customers by Sales
+
+SELECT
+    &quot;Customer Name&quot;,
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+GROUP BY &quot;Customer Name&quot;
+ORDER BY Total_Sales DESC
+LIMIT 10;
+
+-- Top 10 Customers by Profit
+
+SELECT
+    &quot;Customer Name&quot;,
+    ROUND(SUM(Profit),2) AS Total_Profit
+FROM superstore
+GROUP BY &quot;Customer Name&quot;
+ORDER BY Total_Profit DESC
+LIMIT 10;
+
+-- Top 10 Loss Making Customers
+
+SELECT
+    &quot;Customer Name&quot;,
+    ROUND(SUM(Profit),2) AS Total_Loss
+FROM superstore
+GROUP BY &quot;Customer Name&quot;
+ORDER BY Total_Loss ASC
+LIMIT 10;
+
+-- Sales by Customer Segment
+
+SELECT
+    Segment,
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+GROUP BY Segment
+ORDER BY Total_Sales DESC;
+
+SELECT
+    &quot;Customer Name&quot;,
+    SUM(Quantity) AS Total_Quantity
+FROM superstore
+GROUP BY &quot;Customer Name&quot;
+ORDER BY Total_Quantity DESC
+LIMIT 5;
+
+-- Sales by Year
+
+SELECT
+    strftime('%Y', &quot;Order Date&quot;) AS Year,
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+GROUP BY Year
+ORDER BY Year;
+
+SELECT
+    strftime('%m', &quot;Order Date&quot;) AS Month,
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+GROUP BY Month
+ORDER BY Month;
+
+--  Furniture Category Sales
+SELECT
+    ROUND(SUM(Sales),2) AS Furniture_Sales
+FROM superstore
+WHERE Category = 'Furniture';
+
+-- Total Profit of Technology Category
+
+SELECT
+    ROUND(SUM(Profit),2) AS Technology_Profit
+FROM superstore
+WHERE Category = 'Technology';
+
+SELECT
+	ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+WHERE Category = 'Furniture'
+
+SELECT 
+	ROUND(SUM(Sales),2) AS Technologe_Category
+FROM superstore
+WHERE Category = 'Technology'
+AND Region = 'West';
+
+SELECT 
+	ROUND(SUM(Sales),2) AS Office_Supplies
+FROM superstore
+WHERE Category = 'Office Supplies'
+AND Region = 'West';	
+
+SELECT 
+	ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+WHERE Category = 'Technology'
+OR Category = 'Furniture'
+
+-- Query 20 : Sales of All Three Categories
+SELECT
+    Category,
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+WHERE Category IN ('Technology','Furniture','Office Supplies')
+GROUP BY Category
+ORDER BY Total_Sales DESC;
+
+SELECT
+	Region,
+	ROUND(SUM(Profit),2) AS Total_Profit
+FROM superstore
+WHERE Region IN ('West' , 'East')
+GROUP BY Region
+ORDER BY Total_Profit DESC;
+
+-- Check Date Formate	
+SELECT &quot;Order Date&quot;
+FROM superstore
+
+-- Sales in 2016
+SELECT
+    ROUND(SUM(Sales),2) AS Sales_2016
+FROM superstore
+WHERE SUBSTR(&quot;Order Date&quot;,-4)='2016';
+LIMIT 10;
+
+-- Customers whose name starts with A
+SELECT
+    &quot;Customer Name&quot;
+FROM superstore
+WHERE &quot;Customer Name&quot; LIKE 'A%';
+
+-- Products containing Chair
+SELECT
+    &quot;Product Name&quot;
+FROM superstore
+WHERE &quot;Product Name&quot; LIKE '%Chair%';
+
+SELECT 
+	&quot;City&quot;
+FROM superstore
+WHERE &quot;City&quot; LIKE 'New%';
+
+-- Products with Sales between 1000 and 5000
+
+SELECT
+    &quot;Product Name&quot;,
+    Sales
+FROM superstore
+WHERE Sales BETWEEN 1000 AND 5000
+ORDER BY Sales DESC;
+
+SELECT 
+	&quot;Product Name&quot;,
+	&quot;Discount&quot;
+FROM superstore
+WHERE Discount BETWEEN 0.2 AND 0.5
+ORDER BY &quot;Product Name&quot; DESC;
+
+-- Query 25 : Categories with Sales Greater Than 500000
+
+SELECT
+    Category,
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+GROUP BY Category
+HAVING SUM(Sales) &gt; 500000
+ORDER BY Total_Sales DESC;
+
+SELECT
+    MAX(Profit)
+FROM superstore;
+SELECT
+    &quot;Customer Name&quot;,
+    ROUND(SUM(Profit),2) AS Total_Profit
+FROM superstore
+GROUP BY &quot;Customer Name&quot;
+ORDER BY Total_Profit DESC
+LIMIT 10;
+
+-- Query 25 : Customers with Profit Greater Than 5000
+
+SELECT
+    &quot;Customer Name&quot;,
+    ROUND(SUM(Profit),2) AS Total_Profit
+FROM superstore
+GROUP BY &quot;Customer Name&quot;
+HAVING SUM(Profit) &gt; 5000
+ORDER BY Total_Profit DESC;
+
+-- Query 26 : Profit Status
+
+SELECT
+    &quot;Product Name&quot;,
+    Profit,
+    CASE
+        WHEN Profit &gt; 0 THEN 'Profit'
+        WHEN Profit = 0 THEN 'No Profit'
+        ELSE 'Loss'
+    END AS Profit_Status
+FROM superstore
+LIMIT 20;
+
+SELECT
+	&quot;Product Name&quot;,
+	Discount,
+	CASE 
+		WHEN Discount = 0 THEN 'No Discount'
+		WHEN Discount &lt; 0.3 THEN 'Low Discount'
+		WHEN Discount &gt;= 0.3 THEN 'High Discount'
+		END AS Discount_Status
+FROM superstore;
+
+-- Products with Sales Greater Than Average Sales
+SELECT
+    &quot;Product Name&quot;,
+    Sales
+FROM superstore
+WHERE Sales &gt;
+(
+    SELECT AVG(Sales)
+    FROM superstore
+)
+ORDER BY Sales DESC;
+
+SELECT 
+	&quot;Product Name&quot;,
+	Profit
+FROM superstore
+WHERE Profit &lt;
+(
+	SELECT AVG(Profit)
+	FROM superstore
+)
+ORDER BY Profit ASC;
+
+SELECT
+	&quot;Product Name&quot;,
+	ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+GROUP BY &quot;Product Name&quot;
+ORDER BY Total_Sales DESC
+LIMIT 5;
+
+SELECT
+	Category,
+	ROUND(AVG(Profit),2) AS Avg_Profit
+FROM superstore
+WHERE Category = 'Technology'
+GROUP BY Category
+ORDER BY Avg_Profit;
+
+SELECT
+    &quot;Customer Name&quot;,
+    ROUND(SUM(Sales),2) AS Total_Sales
+FROM superstore
+WHERE Region = 'West'
+GROUP BY &quot;Customer Name&quot;
+HAVING SUM(Sales) &gt; 5000
+ORDER BY Total_Sales DESC;
+
+-- Query 1 : Row Number by Sales
+
+SELECT
+    &quot;Product Name&quot;,
+    Sales,
+    ROW_NUMBER() OVER
+    (
+        ORDER BY Sales DESC
+    ) AS Row_Num
+FROM superstore
+LIMIT 20;
+
+SELECT
+	&quot;Customer Name&quot;,
+	ROUND(SUM(Sales),2) AS Total_Sales,
+	ROW_Number() OVER 
+	(
+		ORDER BY Total_Sales DESC
+	) AS Row_Num
+FROM superstore
+GROUP BY &quot;Customer Name&quot;;
+
+SELECT
+    &quot;Customer Name&quot;,
+    Total_Sales,
+    ROW_NUMBER() OVER (
+        ORDER BY Total_Sales DESC
+    ) AS Row_Num
+FROM
+(
+    SELECT
+        &quot;Customer Name&quot;,
+        ROUND(SUM(Sales),2) AS Total_Sales
+    FROM superstore
+    GROUP BY &quot;Customer Name&quot;
+) AS CustomerSales;
+
+SELECT
+    &quot;Customer Name&quot;,
+    Total_Sales,
+    RANK() OVER (
+        ORDER BY Total_Sales DESC
+    ) AS Sales_Rank
+FROM
+(
+    SELECT
+        &quot;Customer Name&quot;,
+        ROUND(SUM(Sales),2) AS Total_Sales
+    FROM superstore
+    GROUP BY &quot;Customer Name&quot;
+) AS CustomerSales;
+
+SELECT
+    &quot;Customer Name&quot;,
+    Total_Sales,
+    DENSE_RANK() OVER (
+        ORDER BY Total_Sales DESC
+    ) AS Sales_Rank
+FROM
+(
+    SELECT
+        &quot;Customer Name&quot;,
+        ROUND(SUM(Sales),2) AS Total_Sales
+    FROM superstore
+    GROUP BY &quot;Customer Name&quot;
+) AS CustomerSales;
+
+
+
+
+
+
+
+
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
